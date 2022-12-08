@@ -22,6 +22,7 @@ gcsfs
 google-cloud
 google-cloud-storage
 google-cloud-bigquery
+pandas-gbq
 mlflow
 s3fs
 fastapi
