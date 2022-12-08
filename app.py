@@ -130,11 +130,22 @@ else:
     st.write("There is no Uniswap transaction")
 
 if account:
-    combined_dict = opensea_dict | uniswap_dict | transfers_dict
-    for key, value in combined_dict.items():
-        combined_dict[key] = [value]
-    df = pd.DataFrame(combined_dict)
-    display_dial('Predicted group:', str(model.predict(df)), COLOR_PINK)
+    X_pred = pd.DataFrame(dict(
+        n_sells=[opensea_dict['n_sells']],
+        sell_volume=[opensea_dict['sell_volume']],
+        n_buys=[opensea_dict['n_buys']],
+        buy_volume=[opensea_dict['buy_volume']],
+        nunique_collections=[opensea_dict['nunique_collections']],
+        avg_time_trades=[opensea_dict['avg_time_trades']],
+        n_swaps=[uniswap_dict['n_swaps']],
+        nunique_pools=[uniswap_dict['nunique_pools']],
+        avg_swap_volume=[uniswap_dict['avg_swap_volume']],
+        avg_time_swaps=[uniswap_dict['avg_time_swaps']],
+        n_sent=[transfers_dict['n_sent']],
+        n_received=[transfers_dict['n_received']],
+        nunique_tokens=[transfers_dict['nunique_tokens']],
+        avg_time_transfers=[transfers_dict['avg_time_transfers']]))
+    display_dial('Predicted group:', str(model.predict(X_pred)), COLOR_PINK)
 
 
 # Scatter plot on swap and opensea
