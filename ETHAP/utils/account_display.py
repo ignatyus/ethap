@@ -1,7 +1,9 @@
 import pandas as pd
 import requests
 import numpy as np
-from ETHAP.utils.fetch_data import UNISWAP_URL, OPENSEA_URL, post_query, parse_swaps
+
+UNISWAP_URL = 'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum'
+OPENSEA_URL = 'https://api.thegraph.com/subgraphs/name/messari/opensea-seaport-ethereum'
 
 PROJECT='on-chain-analytics-ethap'
 PUBLIC_PROJECT='bigquery-public-data'
@@ -10,6 +12,24 @@ PUBLIC_DATASET='crypto_ethereum'
 def average_time(account: pd.Series):
     tmp = account.sort_values()
     return (tmp - tmp.shift(1)).dt.total_seconds().mean()
+
+def post_query(url, query, trial):
+    for i in range(trial):
+        response = requests.post(url, '', json={'query':query})
+        if response.status_code == 200 and 'data' in response.json():
+            return response.json()
+
+def parse_swaps(swaps):
+    for swap in swaps:
+        swap['protocolId'] = swap['protocol']['id']
+        del swap['protocol']
+        swap['tokenInId'] = swap['tokenIn']['id']
+        del swap['tokenIn']
+        swap['tokenOutId'] = swap['tokenOut']['id']
+        del swap['tokenOut']
+        swap['poolId'] = swap['pool']['id']
+        del swap['pool']
+    return swaps
 
 def fetch_swaps(account, limit=1000, starting_ts='0', trial=100):
     query = '''{
