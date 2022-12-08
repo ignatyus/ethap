@@ -145,7 +145,6 @@ if account:
         n_received=[transfers_dict['n_received']],
         nunique_tokens=[transfers_dict['nunique_tokens']],
         avg_time_transfers=[transfers_dict['avg_time_transfers']]))
-    st.dataframe(X_pred)
     display_dial('Predicted group:', str(model.predict(X_pred)), COLOR_PINK)
 
 
