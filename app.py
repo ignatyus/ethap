@@ -7,9 +7,11 @@ import plotly.graph_objects as go
 from htbuilder import div, big, h2, styles
 from htbuilder.units import rem
 import plotly.express as px
-from ETHAP.utils.account_display import uniswap_summary, opensea_summary, opensea_account, transfers_summary
-from ETHAP.utils.account_display import fetch_nft_trades, fetch_parse_public_tansaction, fetch_swaps, uniswap_account
-
+from ETHAP.utils.data import (
+    uniswap_summary, opensea_summary, opensea_account, transfers_summary,
+    fetch_nft_trades, fetch_parse_public_tansaction, fetch_swaps,
+    uniswap_account, load_model
+)
 
 # from ETHAP.utils.get_data import get_uniswap_data
 
@@ -62,6 +64,8 @@ try:
 except:
     st.error("Please make sure you enter a valid account")
     st.stop()
+
+model = load_model(secrets=st.secrets["mlflow_params"])
 
 #colour assigmnet
 average_time_colour = COLOR_BLUE
