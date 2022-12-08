@@ -201,14 +201,14 @@ def opensea_summary(df: pd.DataFrame):
 
 # PUBLIC QUERY
 
-def fetch_parse_public_tansaction(table, account, limit=1000):
+def fetch_parse_public_tansaction(table, account, secrets, limit=1000):
     query = f'''
         SELECT *
         FROM `{PUBLIC_PROJECT}.{PUBLIC_DATASET}.{table}`
         WHERE from_address = "{account}" OR to_address = "{account}"
         LIMIT {limit}
     '''
-    df = pd.io.gbq.read_gbq(query, project_id=PROJECT, dialect='standard')
+    df = pd.io.gbq.read_gbq(query, project_id=PROJECT, dialect='standard', private_key=secrets)
 
     from_df = df[df["from_address"] == account]
     if len(from_df) > 0:

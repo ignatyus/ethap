@@ -91,7 +91,7 @@ if len(opensea_data) > 0:
 else:
     st.write("There is no Opensea transaction")
 
-transfers_data = fetch_parse_public_tansaction(table="token_transfers", account = account, limit = 1000)
+transfers_data = fetch_parse_public_tansaction(table="token_transfers", account = account, limit = 1000, secrets=st.secrets["gcp_service_account"])
 if len(transfers_data) > 0:
     transfers_dict = transfers_summary(transfers_data)
     st.subheader('Token Transfers')
