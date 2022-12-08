@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
-import numpy as np
+from google.cloud import bigquery
+from google.oauth2 import service_account
 
 UNISWAP_URL = 'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum'
 OPENSEA_URL = 'https://api.thegraph.com/subgraphs/name/messari/opensea-seaport-ethereum'
@@ -208,7 +209,12 @@ def fetch_parse_public_tansaction(table, account, secrets, limit=1000):
         WHERE from_address = "{account}" OR to_address = "{account}"
         LIMIT {limit}
     '''
-    df = pd.io.gbq.read_gbq(query, project_id=PROJECT, dialect='standard', private_key=secrets)
+    credentials = service_account.Credentials.from_service_account_info(
+        secrets
+    )
+    client = bigquery.Client(credentials=credentials)
+    query_job = client.query(query)
+    df = query_job.to_dataframe()
 
     from_df = df[df["from_address"] == account]
     if len(from_df) > 0:
