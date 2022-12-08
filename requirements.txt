@@ -35,5 +35,6 @@ termcolor
 
 # frontend
 streamlit
+htbuilder
 
 
