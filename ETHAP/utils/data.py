@@ -99,12 +99,21 @@ def uniswap_account(df: pd.DataFrame):
     return df
 
 def uniswap_summary(df: pd.DataFrame):
-    return {
-        "n_swaps":         df["hash"].count(),
-        "nunique_pools":   df['poolId'].nunique(),
-        "avg_swap_volume": df["amount"].mean().round(2),
-        "avg_time_swaps":  average_time(df["date"]).round(2)
-    }
+    if len(df) > 1:
+        return {
+            "n_swaps":         df["hash"].count(),
+            "nunique_pools":   df['poolId'].nunique(),
+            "avg_swap_volume": df["amount"].mean().round(2),
+            "avg_time_swaps":  average_time(df["date"]).round(2)
+        }
+    else:
+        return {
+            "n_swaps":         None,
+            "nunique_pools":   None,
+            "avg_swap_volume": None,
+            "avg_time_swaps":  None
+        }
+
 
 
 
@@ -191,14 +200,24 @@ def opensea_account(df: pd.DataFrame):
     return df
 
 def opensea_summary(df: pd.DataFrame):
-    return {
-        "n_sells":      len(df[df["total_amount"] < 0]),
-        "sell_volume":  abs(df[df["total_amount"] < 0]["total_amount"].sum()).round(2),
-        "n_buys":       len(df[df["total_amount"] > 0]),
-        "buy_volume":   df[df["total_amount"] > 0]["total_amount"].sum().round(2),
-        "avg_time_trades": average_time(df["date"]).round(2),
-        "nunique_collections": df["collectionId"].nunique()
-    }
+    if len(df) > 1:
+        return {
+            "n_sells":      len(df[df["total_amount"] < 0]),
+            "sell_volume":  abs(df[df["total_amount"] < 0]["total_amount"].sum()).round(2),
+            "n_buys":       len(df[df["total_amount"] > 0]),
+            "buy_volume":   df[df["total_amount"] > 0]["total_amount"].sum().round(2),
+            "avg_time_trades": average_time(df["date"]).round(2),
+            "nunique_collections": df["collectionId"].nunique()
+        }
+    else:
+        return {
+            "n_sells": None,
+            "sell_volume": None,
+            "n_buys": None,
+            "buy_volume": None,
+            "avg_time_trades": None,
+            "nunique_collections": None
+        }
 
 
 # PUBLIC QUERY
@@ -244,12 +263,20 @@ def fetch_parse_public_tansaction(table, account, secrets, limit=1000):
     return df.sort_values("block_timestamp")
 
 def transfers_summary(df: pd.DataFrame):
-    return {
-        "n_sent": len(df[df["direction"] == "sender"]),
-        "n_received": len(df[df["direction"] == "receiver"]),
-        "nunique_tokens": df["token_address"].nunique(),
-        "avg_time_transfers": average_time(df["block_timestamp"]).round(2)
-    }
+    if len(df) > 0:
+        return {
+            "n_sent": len(df[df["direction"] == "sender"]),
+            "n_received": len(df[df["direction"] == "receiver"]),
+            "nunique_tokens": df["token_address"].nunique(),
+            "avg_time_transfers": average_time(df["block_timestamp"]).round(2)
+        }
+    else:
+        return {
+            "n_sent": None,
+            "n_received": None,
+            "nunique_tokens": None,
+            "avg_time_transfers": None
+        }
 
 
  # MLFlow

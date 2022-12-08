@@ -76,8 +76,8 @@ total_sells_colour = COLOR_CYAN
 
 
 opensea_data = fetch_nft_trades(account, limit = limit_param)
+opensea_dict = opensea_summary(opensea_data)
 if len(opensea_data) > 0:
-    opensea_dict = opensea_summary(opensea_data)
     st.subheader('Opensea Transactions')
     a, b, c, d , e, f = st.columns(6)
     with a:
@@ -96,8 +96,8 @@ else:
     st.write("There is no Opensea transaction")
 
 transfers_data = fetch_parse_public_tansaction(table="token_transfers", account = account, limit = 1000, secrets=st.secrets["gcp_service_account"])
+transfers_dict = transfers_summary(transfers_data)
 if len(transfers_data) > 0:
-    transfers_dict = transfers_summary(transfers_data)
     st.subheader('Token Transfers')
     a, b, c, d = st.columns(4)
     with a:
@@ -113,8 +113,8 @@ else:
     st.write("There is no token transfer")
 
 uniswap_data = fetch_swaps(account, limit_param, starting_ts='0', trial=100)
+uniswap_dict = uniswap_summary(uniswap_data)
 if len(uniswap_data) > 0:
-    uniswap_dict = uniswap_summary(uniswap_data)
     st.subheader('Uniswap transactions')
     a, b, c, d = st.columns(4)
     with a:
@@ -129,7 +129,12 @@ if len(uniswap_data) > 0:
 else:
     st.write("There is no Uniswap transaction")
 
-
+if account:
+    combined_dict = opensea_dict | uniswap_dict | transfers_dict
+    for key, value in combined_dict.items():
+        combined_dict[key] = [value]
+    df = pd.DataFrame(combined_dict)
+    display_dial('Predicted group:', str(model.predict(df)), COLOR_PINK)
 
 
 # Scatter plot on swap and opensea
