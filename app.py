@@ -65,7 +65,7 @@ except:
     st.error("Please make sure you enter a valid account")
     st.stop()
 
-model = load_model(secrets=st.secrets["mlflow_params"])
+model = load_model(st.secrets["mlflow_params"])
 
 #colour assigmnet
 average_time_colour = COLOR_BLUE
