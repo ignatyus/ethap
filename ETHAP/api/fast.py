@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from ETHAP.ml_logic.registry import load_model
-from ETHAP.ml_logic.preprocessor import  feature_engineer
 import pandas as pd
 
 app = FastAPI()

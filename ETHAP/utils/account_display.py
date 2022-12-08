@@ -1,8 +1,11 @@
 import pandas as pd
 import requests
 import numpy as np
-from ETHAP.ml_logic.params import PUBLIC_DATASET, PUBLIC_PROJECT, PROJECT
 from ETHAP.utils.fetch_data import UNISWAP_URL, OPENSEA_URL, post_query, parse_swaps
+
+PROJECT='on-chain-analytics-ethap'
+PUBLIC_PROJECT='bigquery-public-data'
+PUBLIC_DATASET='crypto_ethereum'
 
 def average_time(account: pd.Series):
     tmp = account.sort_values()
