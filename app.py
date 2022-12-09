@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 from htbuilder import div, big, h2, styles
 from htbuilder.units import rem
 import plotly.express as px
+from datetime import timedelta
 from ETHAP.utils.data import (
     uniswap_summary, opensea_summary, opensea_account, transfers_summary,
     fetch_nft_trades, fetch_parse_public_tansaction, fetch_swaps,
@@ -91,13 +92,13 @@ if account:
             st.subheader('Uniswap Transactions')
             a, b, c, d = st.columns(4)
             with a:
-                display_dial("n_swaps", f"{uniswap_dict['n_swaps']:.2f}", COLOR_BLUE)
+                display_dial("Number of swaps", f"{uniswap_dict['n_swaps']}", COLOR_BLUE)
             with b:
-                display_dial("nunique_pools",  f"{uniswap_dict['nunique_pools']}", COLOR_PINK)
+                display_dial("Number of pools interacted with",  f"{uniswap_dict['nunique_pools']}", COLOR_PINK)
             with c:
-                display_dial("avg_swap_volume", f"{uniswap_dict['avg_swap_volume']}", COLOR_CYAN)
+                display_dial("Average swap volume ($)", f"{uniswap_dict['avg_swap_volume']}", COLOR_CYAN)
             with d:
-                display_dial("avg_time_swaps",  f"{uniswap_dict['avg_time_swaps']}", COLOR_PINK)
+                display_dial("Average time between swaps",  str(timedelta(seconds=uniswap_dict['avg_time_swaps'].round())), COLOR_PINK)
 
             uniswap_amount = uniswap_account(uniswap_data)
             hist_data = uniswap_amount.index
@@ -122,17 +123,18 @@ if account:
             st.subheader('Opensea Transactions')
             a, b, c, d, e, f = st.columns(6)
             with a:
-                display_dial("average time in s", f"{opensea_dict['avg_time_trades']}", COLOR_BLUE)
+                display_dial("Number of NFT buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
             with b:
-                display_dial("number buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
+                display_dial("Number of NFT sells", f"{opensea_dict['n_sells']}", COLOR_CYAN)
             with c:
-                display_dial("number sells", f"{opensea_dict['n_sells']}", COLOR_CYAN)
+                display_dial("Buy volume (ETH)",  f"{opensea_dict['buy_volume']}", COLOR_PINK)
             with d:
-                display_dial("volume buys ETH",  f"{opensea_dict['buy_volume']}", COLOR_PINK)
+                display_dial("Sell volume (ETH)",  f"{opensea_dict['sell_volume']}", COLOR_CYAN)
             with e:
-                display_dial("volume sells ETH",  f"{opensea_dict['sell_volume']}", COLOR_CYAN)
+                display_dial("Number of unique collections interacted with",  f"{opensea_dict['nunique_collections']}", COLOR_CYAN)
             with f:
-                display_dial("nunique_collections",  f"{opensea_dict['nunique_collections']}", COLOR_CYAN)
+                display_dial("Average time between NFT trades", str(timedelta(seconds=opensea_dict['avg_time_trades'].round())), COLOR_BLUE)
+
 
             opensea_amount = opensea_account(opensea_data)
             hist_data = opensea_amount.index
@@ -156,13 +158,13 @@ if account:
             st.subheader('Token Transfers')
             a, b, c, d = st.columns(4)
             with a:
-                display_dial("n_sent", f"{transfers_dict['n_sent']:.2f}", COLOR_BLUE)
+                display_dial("Number of withdrawals", f"{transfers_dict['n_sent']}", COLOR_BLUE)
             with b:
-                display_dial("n_received",  f"{transfers_dict['n_received']}", COLOR_PINK)
+                display_dial("Number of deposits",  f"{transfers_dict['n_received']}", COLOR_PINK)
             with c:
-                display_dial("nunique_tokens", f"{transfers_dict['nunique_tokens']}", COLOR_CYAN)
+                display_dial("Number of tokens interacted with", f"{transfers_dict['nunique_tokens']}", COLOR_CYAN)
             with d:
-                display_dial("avg_time_transfers",  f"{transfers_dict['avg_time_transfers']}", COLOR_PINK)
+                display_dial("Average time between transfers",  str(timedelta(seconds=transfers_dict['avg_time_transfers'].round())), COLOR_PINK)
 
         else:
             st.write("There is no token transfer")
