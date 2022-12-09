@@ -86,85 +86,88 @@ if account:
             n_received=[transfers_dict['n_received']],
             nunique_tokens=[transfers_dict['nunique_tokens']],
             avg_time_transfers=[transfers_dict['avg_time_transfers']]))
-        display_dial('Predicted group:', str(model.predict(X_pred)), COLOR_PINK)
+        if len(X_pred.dropna()) > 0:
+            display_dial('Predicted group:', str(model.predict(X_pred)), COLOR_PINK)
 
-        if len(uniswap_data) > 0:
-            st.subheader('Uniswap Transactions')
-            a, b, c, d = st.columns(4)
-            with a:
-                display_dial("Number of swaps", f"{uniswap_dict['n_swaps']}", COLOR_BLUE)
-            with b:
-                display_dial("Number of pools interacted with",  f"{uniswap_dict['nunique_pools']}", COLOR_PINK)
-            with c:
-                display_dial("Average swap volume ($)", f"{uniswap_dict['avg_swap_volume']}", COLOR_CYAN)
-            with d:
-                display_dial("Average time between swaps",  str(timedelta(seconds=uniswap_dict['avg_time_swaps'].round())), COLOR_PINK)
+            if len(uniswap_data) > 0:
+                st.subheader('Uniswap Transactions')
+                a, b, c, d = st.columns(4)
+                with a:
+                    display_dial("Number of swaps", f"{uniswap_dict['n_swaps']}", COLOR_BLUE)
+                with b:
+                    display_dial("Number of pools interacted with",  f"{uniswap_dict['nunique_pools']}", COLOR_PINK)
+                with c:
+                    display_dial("Average swap volume ($)", f"{uniswap_dict['avg_swap_volume']}", COLOR_CYAN)
+                with d:
+                    display_dial("Average time between swaps",  str(timedelta(seconds=uniswap_dict['avg_time_swaps'].round())), COLOR_PINK)
 
-            uniswap_amount = uniswap_account(uniswap_data)
-            hist_data = uniswap_amount.index
-            group_labels = uniswap_amount["amount"]
-            time_gap = uniswap_amount.index[-1]-uniswap_amount.index[0]
-            #n_bins = len(uniswap_amount)/time_gap.days
-            data_div = 30
-            n_bins = int(len(uniswap_amount) / data_div)
-            plot=px.histogram(group_labels, hist_data, histfunc = 'sum', nbins = 10)
+                uniswap_amount = uniswap_account(uniswap_data)
+                hist_data = uniswap_amount.index
+                group_labels = uniswap_amount["amount"]
+                time_gap = uniswap_amount.index[-1]-uniswap_amount.index[0]
+                #n_bins = len(uniswap_amount)/time_gap.days
+                data_div = 30
+                n_bins = int(len(uniswap_amount) / data_div)
+                plot=px.histogram(group_labels, hist_data, histfunc = 'sum', nbins = 10)
 
-            plot.update_layout(title_text="Timeseries Transactions",bargap=0.025)
-            plot.update_traces(marker=dict(color="#de21ce"))
-            plot.update_yaxes(title_text='amount total',type='log')
-            st.plotly_chart(plot)
+                plot.update_layout(title_text="Timeseries Transactions",bargap=0.025)
+                plot.update_traces(marker=dict(color="#de21ce"))
+                plot.update_yaxes(title_text='amount total',type='log')
+                st.plotly_chart(plot)
 
 
+            else:
+                st.write("There is no Uniswap transaction")
+
+
+            if len(opensea_data) > 0:
+                st.subheader('Opensea Transactions')
+                a, b, c, d, e, f = st.columns(6)
+                with a:
+                    display_dial("Number of NFT buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
+                with b:
+                    display_dial("Number of NFT sells", f"{opensea_dict['n_sells']}", COLOR_CYAN)
+                with c:
+                    display_dial("Buy volume (ETH)",  f"{opensea_dict['buy_volume']}", COLOR_PINK)
+                with d:
+                    display_dial("Sell volume (ETH)",  f"{opensea_dict['sell_volume']}", COLOR_CYAN)
+                with e:
+                    display_dial("Number of unique collections interacted with",  f"{opensea_dict['nunique_collections']}", COLOR_CYAN)
+                with f:
+                    display_dial("Average time between NFT trades", str(timedelta(seconds=opensea_dict['avg_time_trades'].round())), COLOR_BLUE)
+
+
+                opensea_amount = opensea_account(opensea_data)
+                hist_data = opensea_amount.index
+                group_labels = opensea_amount["amount"]        # name of the dataset
+                time_gap = opensea_amount.index[-1]-opensea_amount.index[0]
+                #n_bins = len(opensea_amount)/time_gap.days
+                data_div = 30
+                n_bins = int(len(opensea_amount) / data_div)
+                plot=px.histogram(group_labels, hist_data, histfunc = 'sum', nbins = 10)
+
+                plot.update_layout(title_text="Timeseries Transactions",bargap=0.025)
+                plot.update_traces(marker=dict(color="#de21ce"))
+                plot.update_yaxes(title_text='amount total',type='log')
+                st.plotly_chart(plot)
+
+            else:
+                st.write("There is no Opensea transaction")
+
+
+            if len(transfers_data) > 0:
+                st.subheader('Token Transfers')
+                a, b, c, d = st.columns(4)
+                with a:
+                    display_dial("Number of withdrawals", f"{transfers_dict['n_sent']}", COLOR_BLUE)
+                with b:
+                    display_dial("Number of deposits",  f"{transfers_dict['n_received']}", COLOR_PINK)
+                with c:
+                    display_dial("Number of tokens interacted with", f"{transfers_dict['nunique_tokens']}", COLOR_CYAN)
+                with d:
+                    display_dial("Average time between transfers",  str(timedelta(seconds=transfers_dict['avg_time_transfers'].round())), COLOR_PINK)
+
+            else:
+                st.write("There is no token transfer")
         else:
-            st.write("There is no Uniswap transaction")
-
-
-        if len(opensea_data) > 0:
-            st.subheader('Opensea Transactions')
-            a, b, c, d, e, f = st.columns(6)
-            with a:
-                display_dial("Number of NFT buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
-            with b:
-                display_dial("Number of NFT sells", f"{opensea_dict['n_sells']}", COLOR_CYAN)
-            with c:
-                display_dial("Buy volume (ETH)",  f"{opensea_dict['buy_volume']}", COLOR_PINK)
-            with d:
-                display_dial("Sell volume (ETH)",  f"{opensea_dict['sell_volume']}", COLOR_CYAN)
-            with e:
-                display_dial("Number of unique collections interacted with",  f"{opensea_dict['nunique_collections']}", COLOR_CYAN)
-            with f:
-                display_dial("Average time between NFT trades", str(timedelta(seconds=opensea_dict['avg_time_trades'].round())), COLOR_BLUE)
-
-
-            opensea_amount = opensea_account(opensea_data)
-            hist_data = opensea_amount.index
-            group_labels = opensea_amount["amount"]        # name of the dataset
-            time_gap = opensea_amount.index[-1]-opensea_amount.index[0]
-            #n_bins = len(opensea_amount)/time_gap.days
-            data_div = 30
-            n_bins = int(len(opensea_amount) / data_div)
-            plot=px.histogram(group_labels, hist_data, histfunc = 'sum', nbins = 10)
-
-            plot.update_layout(title_text="Timeseries Transactions",bargap=0.025)
-            plot.update_traces(marker=dict(color="#de21ce"))
-            plot.update_yaxes(title_text='amount total',type='log')
-            st.plotly_chart(plot)
-
-        else:
-            st.write("There is no Opensea transaction")
-
-
-        if len(transfers_data) > 0:
-            st.subheader('Token Transfers')
-            a, b, c, d = st.columns(4)
-            with a:
-                display_dial("Number of withdrawals", f"{transfers_dict['n_sent']}", COLOR_BLUE)
-            with b:
-                display_dial("Number of deposits",  f"{transfers_dict['n_received']}", COLOR_PINK)
-            with c:
-                display_dial("Number of tokens interacted with", f"{transfers_dict['nunique_tokens']}", COLOR_CYAN)
-            with d:
-                display_dial("Average time between transfers",  str(timedelta(seconds=transfers_dict['avg_time_transfers'].round())), COLOR_PINK)
-
-        else:
-            st.write("There is no token transfer")
+            st.write("This account does not have any transactions")
