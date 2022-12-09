@@ -132,7 +132,7 @@ if account:
                     st.write(" \n")
                     st.write(" \n")
 
-                    st.write("###### Timeseries Transactions")
+                    st.write("###### Swap History")
                     st.bar_chart(uniswap_amount)
                 with st.expander(':scroll:Uniswap dataframe', expanded=False):
                     st.dataframe(uniswap_data)
@@ -170,7 +170,7 @@ if account:
 
                     a, b = st.columns([1,0.6])
                     with a:
-                        st.write("###### Timeseries Transactions")
+                        st.write("###### NFT Trade History")
                         st.bar_chart(opensea_amount, height=480)
                     with b:
                         st.write("###### Buy vs. Sell")
