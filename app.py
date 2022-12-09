@@ -113,8 +113,8 @@ if account:
                 display_dial('Predicted group:', 'High frequency, mid volume NFT trader', COLOR_PINK)
             elif profile == 6:
                 display_dial('Predicted group:', 'High volume, mid frequency NFT trader', COLOR_PINK)
-            elif profile == 7:
-                display_dial('Predicted group:', 'High frequency cryptocurrency trader', COLOR_PINK)
+            elif profile == 2:
+                display_dial('Predicted group:', 'High volume cryptocurrency trader', COLOR_PINK)
             else:
                 display_dial('Predicted group:', str(profile), COLOR_PINK)
 
