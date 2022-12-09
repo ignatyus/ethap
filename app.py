@@ -108,7 +108,15 @@ if account:
             avg_time_transfers=[transfers_dict['avg_time_transfers']]))
 
         if len(X_pred.dropna(how='all')) > 0:
-            display_dial('Predicted group:', str(model.predict(X_pred)), COLOR_PINK)
+            profile = model.predict(X_pred)[0]
+            if profile == 5:
+                display_dial('Predicted group:', 'High frequency, mid volume NFT trader', COLOR_PINK)
+            elif profile == 6:
+                display_dial('Predicted group:', 'High volume, mid frequency NFT trader', COLOR_PINK)
+            elif profile == 7:
+                display_dial('Predicted group:', 'High frequency cryptocurrency trader', COLOR_PINK)
+            else:
+                display_dial('Predicted group:', str(profile), COLOR_PINK)
 
             if len(uniswap_data) > 0:
                 a, b = st.columns([1, 20])
