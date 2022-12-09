@@ -119,16 +119,6 @@ def uniswap_summary(df: pd.DataFrame):
 
 # NFT/OPENSEA
 
-def parse_buys(df: pd.DataFrame):
-    df['total_amount'] = (df["amount"]).astype("float") * (df["priceETH"]).astype("float")
-    df['from'] = df['buyer']
-    return df
-
-def parse_sells(df: pd.DataFrame):
-    df['total_amount'] = - (df["amount"]).astype("float") * (df["priceETH"]).astype("float")
-    df['from'] = df['seller']
-    return df
-
 def parse_nft_trades(buys, sells):
     if buys:
         for buy in buys:
@@ -145,7 +135,7 @@ def parse_nft_trades(buys, sells):
             sell['collectionId'] = sell['collection']['id']
             del sell['collection']
         sell_df = pd.DataFrame(sells)
-        sell_df['total_amount'] = (sell_df["amount"]).astype("float") * (sell_df["priceETH"]).astype("float")
+        sell_df['total_amount'] = - (sell_df["amount"]).astype("float") * (sell_df["priceETH"]).astype("float")
         sell_df['from'] = sell_df['seller']
     else:
         sell_df = pd.DataFrame()
