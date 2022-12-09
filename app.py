@@ -58,7 +58,7 @@ list_selctions = ['NFT', 'UNISWAP','Token Transfer']
 
 with st.form(key="search_form"):
     try:
-        account = st.text_input("Enter Account Identifier: ")
+        account = (st.text_input("Enter Account Identifier: ")).lower()
 
     except:
         st.error("Please make sure you enter a valid account")
