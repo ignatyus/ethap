@@ -7,7 +7,7 @@ import mlflow
 UNISWAP_URL = 'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum'
 OPENSEA_URL = 'https://api.thegraph.com/subgraphs/name/messari/opensea-seaport-ethereum'
 
-PROJECT='on-chain-analytics-ethap'
+PROJECT='wagon-bootcamp-364813'
 PUBLIC_PROJECT='bigquery-public-data'
 PUBLIC_DATASET='crypto_ethereum'
 
