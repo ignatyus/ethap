@@ -146,7 +146,7 @@ def parse_nft_trades(buys, sells):
             del sell['collection']
         sell_df = pd.DataFrame(sells)
         sell_df['total_amount'] = (sell_df["amount"]).astype("float") * (sell_df["priceETH"]).astype("float")
-        sell_df['from'] = sell_df['buyer']
+        sell_df['from'] = sell_df['seller']
     else:
         sell_df = pd.DataFrame()
 
