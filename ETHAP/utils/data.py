@@ -37,7 +37,7 @@ def fetch_swaps(account, limit=1000, starting_ts='0', trial=100):
     query = '''{
         swaps (first: %i,
             orderBy: timestamp,
-            orderDirection: asc,
+            orderDirection: desc,
             where: {
                 timestamp_gt: %s,
                 from: %s
@@ -151,7 +151,7 @@ def fetch_nft_trades(account, limit=1000, starting_ts='0', trial=100):
     query = '''{
         trades (first: %i,
             orderBy: timestamp,
-            orderDirection: asc,
+            orderDirection: desc,
             where: {
                 timestamp_gt: %s,
                 %s: %s
