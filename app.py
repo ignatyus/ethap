@@ -16,6 +16,7 @@ from ETHAP.utils.data import (
 st.set_page_config(layout="wide",page_icon="🐤", page_title="Ethereum Account Profiling")
 
 ETH_IMG = "https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp"
+ML_IMG = "https://www.pngkit.com/png/full/182-1820449_whitepages-pro-machine-learning-machine-learning-model-icon.png"
 OPENSEA_IMG ="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/OpenSea_icon.svg/2048px-OpenSea_icon.svg.png"
 SWAP_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png"
 TOKEN_IMG = "https://cdn-icons-png.flaticon.com/512/1372/1372789.png"
@@ -109,14 +110,24 @@ if account:
 
         if len(X_pred.dropna(how='all')) > 0:
             profile = model.predict(X_pred)[0]
-            if profile == 5:
-                display_dial('Predicted group:', 'High frequency, mid volume NFT trader', COLOR_PINK)
-            elif profile == 6:
-                display_dial('Predicted group:', 'High volume, mid frequency NFT trader', COLOR_PINK)
-            elif profile == 2:
-                display_dial('Predicted group:', 'High volume cryptocurrency trader', COLOR_PINK)
-            else:
-                display_dial('Predicted group:', str(profile), COLOR_PINK)
+            a, b = st.columns([1, 20])
+            with a:
+                st.image(ML_IMG, width=60)
+            with b:
+                st.subheader('User profile')
+            with st.expander('Machine Learning Model Prediction', expanded=True):
+                if profile == 2:
+                    display_dial('Predicted group:', 'Mid volume cryptocurrency trader', COLOR_PINK)
+                elif profile == 5:
+                    display_dial('Predicted group:', 'High frequency, mid volume NFT trader', COLOR_PINK)
+                elif profile == 6:
+                    display_dial('Predicted group:', 'High volume, mid frequency NFT trader', COLOR_PINK)
+                elif profile == 7:
+                    display_dial('Predicted group:', 'High volume cryptocurrency trader', COLOR_PINK)
+                else:
+                    display_dial('Predicted group:', f'{profile} (Description will be added)', COLOR_PINK)
+
+                st.write('Disclaimer: This prediction is made by an unsupervised clustering ML model. It has trained on over 100k accounts, looking through hundreds of millions of transactions. However, our model could be more advanced and needs more training. ')
 
             if len(uniswap_data) > 0:
                 a, b = st.columns([1, 20])
