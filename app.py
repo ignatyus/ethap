@@ -8,11 +8,15 @@ from htbuilder import div, big, h2, styles
 from htbuilder.units import rem
 import plotly.express as px
 from datetime import timedelta
-from ETHAP.utils.data import (
-    uniswap_summary, opensea_summary, opensea_account, transfers_summary,
-    fetch_nft_trades, fetch_parse_public_tansaction, fetch_swaps,
-    uniswap_account, load_model
+from ETHAP.utils.mlflow import load_model
+
+from ETHAP.utils.etherscan import fetch_token_transfers, transfers_summary
+
+from ETHAP.utils.the_graph import (
+    fetch_swaps, uniswap_summary,
+    fetch_nft_trades, opensea_summary, opensea_account
 )
+
 st.set_page_config(layout="wide",page_icon="🐤", page_title="Ethereum Account Profiling")
 
 ETH_IMG = "https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp"
@@ -84,7 +88,7 @@ if account:
         else:
             opensea_data = pd.DataFrame()
         if token:
-            transfers_data = fetch_parse_public_tansaction(table="token_transfers", account = account, limit = 1000, secrets=st.secrets["gcp_service_account"])
+            transfers_data = fetch_token_transfers(account)
         else:
             transfers_data = pd.DataFrame()
 
@@ -136,8 +140,8 @@ if account:
                 with b:
                     st.subheader('Uniswap transactions')
                 with st.expander('Uniswap summary', expanded=True):
-                    uniswap_amount = uniswap_account(uniswap_data)
-                    st.write("##### Fetched ", len(uniswap_amount)," transactions from uniswap source...")
+                    uniswap_history = uniswap_data[["amount", "date"]].set_index("date")
+                    st.write("##### Fetched ", len(uniswap_history)," transactions from uniswap source...")
                     a, b, c, d = st.columns(4)
                     with a:
                         display_dial("Number of swaps", f"{uniswap_dict['n_swaps']}", COLOR_BLUE)
@@ -152,7 +156,7 @@ if account:
                     st.write(" \n")
 
                     st.write("###### Swap History")
-                    st.bar_chart(uniswap_amount)
+                    st.bar_chart(uniswap_history)
                 with st.expander(':scroll:Uniswap dataframe', expanded=False):
                     st.dataframe(uniswap_data)
 
@@ -166,8 +170,8 @@ if account:
                 with b:
                     st.subheader('Opensea Transactions')
                 with st.expander('Opensea summary', expanded=True):
-                    opensea_amount = opensea_account(opensea_data)
-                    st.write("##### Fetched ", len(opensea_amount)," transactions from opensea source...")
+                    opensea_history = opensea_account(opensea_data)
+                    st.write("##### Fetched ", len(opensea_history)," transactions from opensea source...")
                     a, b, c, d, e, f = st.columns(6)
                     with a:
                         display_dial("Number of NFT buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
@@ -190,7 +194,7 @@ if account:
                     a, b = st.columns([1,0.6])
                     with a:
                         st.write("###### NFT Trade History")
-                        st.bar_chart(opensea_amount, height=480)
+                        st.bar_chart(opensea_history, height=480)
                     with b:
                         st.write("###### Buy vs. Sell")
                         fig = go.Figure(data=[go.Pie(labels=["buy volume", "sell volume"],
