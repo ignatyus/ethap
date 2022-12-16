@@ -1,21 +1,15 @@
 import streamlit as st
-import numpy as np
-import matplotlib as plt
 import pandas as pd
-from plotly.subplots import make_subplots
 import plotly.graph_objects as go
 from htbuilder import div, big, h2, styles
 from htbuilder.units import rem
-import plotly.express as px
 from datetime import timedelta
-from ETHAP.utils.mlflow import load_model
 
-from ETHAP.utils.etherscan import fetch_token_transfers, transfers_summary
+from utils.mlflow import load_model
+from utils.etherscan import fetch_token_transfers, transfers_summary
+from utils.the_graph import fetch_swaps, uniswap_summary, fetch_nft_trades, \
+                            opensea_summary, opensea_account
 
-from ETHAP.utils.the_graph import (
-    fetch_swaps, uniswap_summary,
-    fetch_nft_trades, opensea_summary, opensea_account
-)
 
 st.set_page_config(layout="wide",page_icon="🐤", page_title="Ethereum Account Profiling")
 
@@ -24,8 +18,6 @@ ML_IMG = "https://www.pngkit.com/png/full/182-1820449_whitepages-pro-machine-lea
 OPENSEA_IMG ="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/OpenSea_icon.svg/2048px-OpenSea_icon.svg.png"
 SWAP_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png"
 TOKEN_IMG = "https://cdn-icons-png.flaticon.com/512/1372/1372789.png"
-
-# from ETHAP.utils.get_data import get_uniswap_data
 
 COLOR_RED   = "#FF4B4B"
 COLOR_BLUE  = "#1C83E1"
@@ -75,7 +67,7 @@ with st.form(key="search_form"):
     token = c.checkbox("Transfers", True)
     search_button = st.form_submit_button(label="Search")
 
-model = load_model(st.secrets["mlflow_params"])
+model = load_model()
 
 if account:
     with st.spinner(text='Querying data......'):
