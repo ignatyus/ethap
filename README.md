@@ -1,73 +1,33 @@
-# Data analysis
-- Document here the project: ETHAP
-- Description: Project Description
-- Data Source:
-- Type of analysis:
+<p align="center">
+    <img src="https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp" alt="ethap logo" width=80px />
+</p>
+<h1 align="center">ETHAP User Interface</h1>
+<h3 align="center">:hatching_chick:Ethereum account profiling with Python:hatching_chick:</h3>
 
-Please document the project the better you can.
+    
 
-# Startup the project
+## :bookmark_tabs: Introduction
+ETHAP is an interactive data analysis tool that can be given to any Ethereum account and analyze the account’s transaction behaviour.  
+It has a machine learning model that predicts the account's transaction profile.  
+The model is trained on hundreds of millions of transactions.  
+Please have a visit to our user interface [Ethereum Account Profiling](https://eth-ap.streamlit.app/). 
+<p align="center">
+<img src="https://user-images.githubusercontent.com/114762620/208110911-3f005d81-6e91-4ee8-bbdc-94a71ecc9dd5.png" />(https://eth-ap.streamlit.app/)
 
-The initial setup.
 
-Create virtualenv and install the project:
-```bash
-sudo apt-get install virtualenv python-pip python-dev
-deactivate; virtualenv ~/venv ; source ~/venv/bin/activate ;\
-    pip install pip -U; pip install -r requirements.txt
-```
+## :balloon: Highlights
+- The frontend is built upon [python(3.10)](https://www.python.org/downloads/release/python-3106/) and [streamlit(1.15.2)](https://streamlit.io/)
+- Up to date, token transfer data is fetched from [Etherscan](https://etherscan.io/)
+- Tades in Uniswap v2 and Opensea Seaport data is fetched from [The Graph Network](https://thegraph.com/hosted-service)
 
-Unittest test:
-```bash
-make clean install test
-```
 
-Check for ETHAP in github.com/{group}. If your project is not set please add it:
 
-Create a new project on github.com/{group}/ETHAP
-Then populate it:
+## :moyai: Author
+ETHAP is co-maintained by our team:
 
-```bash
-##   e.g. if group is "{group}" and project_name is "ETHAP"
-git remote add origin git@github.com:{group}/ETHAP.git
-git push -u origin master
-git push -u origin --tags
-```
+[@İbrahim Karakoç](https://github.com/ignatyus)  
+[@Mo Li](https://github.com/molly693)  
+[@Sittichoke Som-am](https://github.com/numbernard)  
+[@Armin Plath](https://github.com/Armin30)  
 
-Functionnal test with a script:
 
-```bash
-cd
-mkdir tmp
-cd tmp
-ETHAP-run
-```
-
-# Install
-
-Go to `https://github.com/{group}/ETHAP` to see the project, manage issues,
-setup you ssh public key, ...
-
-Create a python3 virtualenv and activate it:
-
-```bash
-sudo apt-get install virtualenv python-pip python-dev
-deactivate; virtualenv -ppython3 ~/venv ; source ~/venv/bin/activate
-```
-
-Clone the project and install it:
-
-```bash
-git clone git@github.com:{group}/ETHAP.git
-cd ETHAP
-pip install -r requirements.txt
-make clean install test                # install and test
-```
-Functionnal test with a script:
-
-```bash
-cd
-mkdir tmp
-cd tmp
-ETHAP-run
-```
