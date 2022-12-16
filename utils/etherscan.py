@@ -1,7 +1,7 @@
 import requests
 import streamlit as st
 import pandas as pd
-from ETHAP.utils.data import average_time
+from utils.data import average_time
 
 ETHERSCAN_URL = 'https://api.etherscan.io/api'
 PK = st.secrets['etherscan_api']['KEY']

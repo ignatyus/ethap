@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-from ETHAP.utils.data import average_time
+from utils.data import average_time
 
 UNISWAP_URL = 'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum'
 OPENSEA_URL = 'https://api.thegraph.com/subgraphs/name/messari/opensea-seaport-ethereum'

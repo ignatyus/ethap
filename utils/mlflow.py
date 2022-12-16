@@ -1,6 +1,9 @@
 import mlflow
+import streamlit as st
 
-def load_model(params):
+params = st.secrets["mlflow_params"]
+
+def load_model():
     MLFLOW_TRACKING_URI = params['MLFLOW_TRACKING_URI']
     MLFLOW_MODEL_NAME = params['MLFLOW_MODEL_NAME']
     """
