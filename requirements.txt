@@ -1,41 +1,12 @@
-# packaging
-pip>=9
-setuptools>=26
-twine
-wheel>=0.29
-
 # data science
-numpy
 pandas
 scikit-learn==1.1.3
 plotly
-
-# tests/linter
-black
-coverage
-flake8
-pytest
-yapf
-
-# API
-gcsfs
-google-cloud
-google-cloud-storage
-google-cloud-bigquery
-pandas-gbq
 mlflow
-s3fs
-fastapi
-uvicorn
 
-# utilities
-six>=1.14
-joblib
-memoized-property
-termcolor
+# data sources
+requests
 
 # frontend
 streamlit
 htbuilder
-
-
