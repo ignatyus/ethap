@@ -1,6 +1,6 @@
 import pandas as pd
 import requests
-from utils.data import average_time
+from utils.helpers import average_time
 
 UNISWAP_URL = 'https://api.thegraph.com/subgraphs/name/messari/uniswap-v3-ethereum'
 OPENSEA_URL = 'https://api.thegraph.com/subgraphs/name/messari/opensea-seaport-ethereum'
@@ -94,12 +94,12 @@ def clean_swaps(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 def uniswap_summary(df: pd.DataFrame):
-    if len(df) > 1:
+    if len(df) > 0:
         return {
             "n_swaps":         df["hash"].count(),
             "nunique_pools":   df['poolId'].nunique(),
             "avg_swap_volume": df["amount"].mean().round(2),
-            "avg_time_swaps":  average_time(df["date"]).round(2)
+            "avg_time_swaps":  average_time(df["date"])
         }
     else:
         return {
@@ -184,13 +184,13 @@ def opensea_account(df: pd.DataFrame):
     return df
 
 def opensea_summary(df: pd.DataFrame):
-    if len(df) > 1:
+    if len(df) > 0:
         return {
             "n_sells":      len(df[df["total_amount"] < 0]),
             "sell_volume":  abs(df[df["total_amount"] < 0]["total_amount"].sum()).round(2),
             "n_buys":       len(df[df["total_amount"] > 0]),
             "buy_volume":   df[df["total_amount"] > 0]["total_amount"].sum().round(2),
-            "avg_time_trades": average_time(df["date"]).round(2),
+            "avg_time_trades": average_time(df["date"]),
             "nunique_collections": df["collectionId"].nunique()
         }
     else:

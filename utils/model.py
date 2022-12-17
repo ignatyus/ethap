@@ -3,6 +3,7 @@ import streamlit as st
 
 params = st.secrets["mlflow_params"]
 
+@st.cache
 def load_model():
     MLFLOW_TRACKING_URI = params['MLFLOW_TRACKING_URI']
     MLFLOW_MODEL_NAME = params['MLFLOW_MODEL_NAME']

@@ -1,65 +1,32 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
-from htbuilder import div, big, h2, styles
-from htbuilder.units import rem
-from datetime import timedelta
 
-from utils.mlflow import load_model
-from utils.etherscan import fetch_token_transfers, transfers_summary
-from utils.the_graph import fetch_swaps, uniswap_summary, fetch_nft_trades, \
-                            opensea_summary, opensea_account
-
+from utils.model import load_model
+from utils.data_sources.etherscan import fetch_token_transfers, transfers_summary
+from utils.data_sources.the_graph import fetch_swaps, uniswap_summary, \
+    fetch_nft_trades, opensea_summary, opensea_account
+from utils.helpers import combine_account_info
+from utils.frontend.display import display_ml_prediction, display_uniswap, \
+    display_opensea, display_token_transfers
+from utils.frontend.images import ETH_IMG, ML_IMG, OPENSEA_IMG, SWAP_IMG, TOKEN_IMG
 
 st.set_page_config(layout="wide",page_icon="🐤", page_title="Ethereum Account Profiling")
 
-ETH_IMG = "https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp"
-ML_IMG = "https://www.pngkit.com/png/full/182-1820449_whitepages-pro-machine-learning-machine-learning-model-icon.png"
-OPENSEA_IMG ="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/OpenSea_icon.svg/2048px-OpenSea_icon.svg.png"
-SWAP_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png"
-TOKEN_IMG = "https://cdn-icons-png.flaticon.com/512/1372/1372789.png"
+# Load ML model
 
-COLOR_RED   = "#FF4B4B"
-COLOR_BLUE  = "#1C83E1"
-COLOR_CYAN  = "#00C0F2"
-COLOR_GREEN = "#4feb34"
-COLOR_PINK  = "#de21ce"
+model = load_model()
 
-def display_dial(title, value, color):
-        st.markdown(
-            div(
-                style=styles(
-                    text_align="center",
-                    color=color,
-                    padding=(rem(0.8), 0, rem(3), 0),
-                )
-            )(
-                h2(style=styles(font_size=rem(0.8), font_weight=600, padding=0))(title),
-                big(style=styles(font_size=rem(1.5), font_weight=800, line_height=1))(
-                    value
-                ),
-            ),
-            unsafe_allow_html=True,
-        )
-
-# Creating Title Page
+# Create Title
 
 a, b = st.columns([1,8])
-with a:
-    st.image(ETH_IMG, width=80)
-with b:
-    st.title("ETHAP\nETHEREUM ACCOUNT PROFILING")
+a.image(ETH_IMG, width=80)
+b.title("ETHAP\nETHEREUM ACCOUNT PROFILING")
 
-list_selctions = ['NFT', 'UNISWAP','Token Transfer']
-# Request data entry for account selection
+# Account input and data source selection
 
 with st.form(key="search_form"):
-    try:
-        account = (st.text_input("Enter Account Identifier: ")).lower()
+    account = (st.text_input("Enter Account Identifier: ")).lower()
 
-    except:
-        st.error("Please make sure you enter a valid account")
-        st.stop()
     a, b, c, d = st.columns([1, 1, 1, 3])
 
     swap = a.checkbox("Uniswap", True)
@@ -67,16 +34,14 @@ with st.form(key="search_form"):
     token = c.checkbox("Transfers", True)
     search_button = st.form_submit_button(label="Search")
 
-model = load_model()
-
 if account:
     with st.spinner(text='Querying data......'):
         if swap:
-            uniswap_data = fetch_swaps(account, 1000, starting_ts='0', trial=100)
+            uniswap_data = fetch_swaps(account)
         else:
             uniswap_data = pd.DataFrame()
         if opensea:
-            opensea_data = fetch_nft_trades(account, limit = 1000)
+            opensea_data = fetch_nft_trades(account)
         else:
             opensea_data = pd.DataFrame()
         if token:
@@ -88,136 +53,66 @@ if account:
         opensea_dict = opensea_summary(opensea_data)
         transfers_dict = transfers_summary(transfers_data)
 
-        X_pred = pd.DataFrame(dict(
-            n_sells=[opensea_dict['n_sells']],
-            sell_volume=[opensea_dict['sell_volume']],
-            n_buys=[opensea_dict['n_buys']],
-            buy_volume=[opensea_dict['buy_volume']],
-            nunique_collections=[opensea_dict['nunique_collections']],
-            avg_time_trades=[opensea_dict['avg_time_trades']],
-            n_swaps=[uniswap_dict['n_swaps']],
-            nunique_pools=[uniswap_dict['nunique_pools']],
-            avg_swap_volume=[uniswap_dict['avg_swap_volume']],
-            avg_time_swaps=[uniswap_dict['avg_time_swaps']],
-            n_sent=[transfers_dict['n_sent']],
-            n_received=[transfers_dict['n_received']],
-            nunique_tokens=[transfers_dict['nunique_tokens']],
-            avg_time_transfers=[transfers_dict['avg_time_transfers']]))
+        X_pred = combine_account_info(opensea_dict, uniswap_dict, transfers_dict)
 
         if len(X_pred.dropna(how='all')) > 0:
+            # ML Prediction
+
             profile = model.predict(X_pred)[0]
             a, b = st.columns([1, 20])
-            with a:
-                st.image(ML_IMG, width=60)
-            with b:
-                st.subheader('User profile')
+            a.image(ML_IMG, width=50)
+            b.subheader('User profile')
             with st.expander('Machine Learning Model Prediction', expanded=True):
-                if profile == 2:
-                    display_dial('Predicted group:', 'Mid volume cryptocurrency trader', COLOR_PINK)
-                elif profile == 5:
-                    display_dial('Predicted group:', 'High frequency, mid volume NFT trader', COLOR_PINK)
-                elif profile == 6:
-                    display_dial('Predicted group:', 'High volume, mid frequency NFT trader', COLOR_PINK)
-                elif profile == 7:
-                    display_dial('Predicted group:', 'High volume cryptocurrency trader', COLOR_PINK)
-                else:
-                    display_dial('Predicted group:', f'{profile} (Description will be added)', COLOR_PINK)
+                display_ml_prediction(profile)
 
-                st.write('Disclaimer: This prediction is made by an unsupervised clustering ML model. It has trained on over 100k accounts, looking through hundreds of millions of transactions. However, our model could be more advanced and needs more training. ')
+            # Uniswap
 
-            if len(uniswap_data) > 0:
-                a, b = st.columns([1, 20])
-                with a:
-                    st.image(SWAP_IMG, width=60)
-                with b:
-                    st.subheader('Uniswap transactions')
-                with st.expander('Uniswap summary', expanded=True):
+            a, b = st.columns([1, 20])
+            a.image(SWAP_IMG, width=50)
+            b.subheader('Uniswap transactions')
+            with st.expander('Uniswap summary', expanded=True):
+                if len(uniswap_data) > 0:
                     uniswap_history = uniswap_data[["amount", "date"]].set_index("date")
-                    st.write("##### Fetched ", len(uniswap_history)," transactions from uniswap source...")
-                    a, b, c, d = st.columns(4)
-                    with a:
-                        display_dial("Number of swaps", f"{uniswap_dict['n_swaps']}", COLOR_BLUE)
-                    with b:
-                        display_dial("Number of pools interacted with",  f"{uniswap_dict['nunique_pools']}", COLOR_PINK)
-                    with c:
-                        display_dial("Average swap volume ($)", f"{uniswap_dict['avg_swap_volume']}", COLOR_CYAN)
-                    with d:
-                        display_dial("Average time between swaps",  str(timedelta(seconds=uniswap_dict['avg_time_swaps'].round())), COLOR_PINK)
+                    display_uniswap(uniswap_history, uniswap_dict)
 
-                    st.write(" \n")
-                    st.write(" \n")
+                elif swap:
+                    st.write("## There is no Uniswap transaction")
 
-                    st.write("###### Swap History")
-                    st.bar_chart(uniswap_history)
-                with st.expander(':scroll:Uniswap dataframe', expanded=False):
+            with st.expander(':scroll: Uniswap dataframe', expanded=False):
+                if len(uniswap_data) > 0:
                     st.dataframe(uniswap_data)
 
-            elif swap:
-                st.write("There is no Uniswap transaction")
+            # Opensea
 
-            if len(opensea_data) > 0:
-                a, b = st.columns([1,20])
-                with a:
-                    st.image(OPENSEA_IMG, width=45)
-                with b:
-                    st.subheader('Opensea Transactions')
-                with st.expander('Opensea summary', expanded=True):
+            a, b = st.columns([1,20])
+            a.image(OPENSEA_IMG, width=50)
+            b.subheader('Opensea Transactions')
+            with st.expander('Opensea summary', expanded=True):
+                if len(opensea_data) > 0:
                     opensea_history = opensea_account(opensea_data)
-                    st.write("##### Fetched ", len(opensea_history)," transactions from opensea source...")
-                    a, b, c, d, e, f = st.columns(6)
-                    with a:
-                        display_dial("Number of NFT buys",  f"{opensea_dict['n_buys']}", COLOR_PINK)
-                    with b:
-                        display_dial("Number of NFT sells", f"{opensea_dict['n_sells']}", COLOR_CYAN)
-                    with c:
-                        display_dial("Buy volume (ETH)",  f"{opensea_dict['buy_volume']}", COLOR_PINK)
-                    with d:
-                        display_dial("Sell volume (ETH)",  f"{opensea_dict['sell_volume']}", COLOR_CYAN)
-                    with e:
-                        display_dial("Number of unique collections interacted with",  f"{opensea_dict['nunique_collections']}", COLOR_CYAN)
-                    with f:
-                        display_dial("Average time between NFT trades", str(timedelta(seconds=opensea_dict['avg_time_trades'].round())), COLOR_BLUE)
+                    display_opensea(opensea_history, opensea_dict)
 
+                elif opensea:
+                    st.write("## There is no Opensea transaction")
 
-
-                    st.write(" \n")
-                    st.write(" \n")
-
-                    a, b = st.columns([1,0.6])
-                    with a:
-                        st.write("###### NFT Trade History")
-                        st.bar_chart(opensea_history, height=480)
-                    with b:
-                        st.write("###### Buy vs. Sell")
-                        fig = go.Figure(data=[go.Pie(labels=["buy volume", "sell volume"],
-                                                    values=([opensea_dict["buy_volume"], opensea_dict["sell_volume"]]))])
-                        st.plotly_chart(fig, use_container_width=True)
-                with st.expander(':scroll:Opensea dataframe', expanded=False):
+            with st.expander(':scroll: Opensea dataframe', expanded=False):
+                if len(opensea_data) > 0:
                     st.dataframe(opensea_data)
 
-            elif opensea:
-                st.write("There is no Opensea transaction")
+            # Token transfers
 
-            if len(transfers_data) > 0:
-                a, b = st.columns([1, 20])
-                with a:
-                    st.image(TOKEN_IMG, width=70)
-                with b:
-                    st.subheader('Token Transfers')
-                with st.expander('Token transfer summary', expanded=True):
-                    st.write("##### Fetched ", len(transfers_data)," transactions from token transfers source...")
-                    a, b, c, d = st.columns(4)
-                    with a:
-                        display_dial("Number of withdrawals", f"{transfers_dict['n_sent']}", COLOR_BLUE)
-                    with b:
-                        display_dial("Number of deposits",  f"{transfers_dict['n_received']}", COLOR_PINK)
-                    with c:
-                        display_dial("Number of tokens interacted with", f"{transfers_dict['nunique_tokens']}", COLOR_CYAN)
-                    with d:
-                        display_dial("Average time between transfers",  str(timedelta(seconds=transfers_dict['avg_time_transfers'].round())), COLOR_PINK)
-                with st.expander(':scroll:Token transfer dataframe', expanded=False):
+            a, b = st.columns([1, 20])
+            a.image(TOKEN_IMG, width=50)
+            b.subheader('Token Transfers')
+            with st.expander('Token transfer summary', expanded=True):
+                if len(transfers_data) > 0:
+                    display_token_transfers(transfers_data, transfers_dict)
+
+                elif token:
+                    st.write("## There is no token transfer")
+            with st.expander(':scroll: Token transfer dataframe', expanded=False):
+                if len(transfers_data) > 0:
                     st.dataframe(transfers_data)
-            elif token:
-                st.write("There is no token transfer")
+
         elif swap or opensea or token:
-            st.write("This account does not have any transactions")
+            st.write("## This account does not have any transactions")
