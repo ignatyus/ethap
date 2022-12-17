@@ -25,33 +25,34 @@ def display_dial(title, value, color):
 
 def display_ml_prediction(profile):
     if profile == 0:
-        display_dial('Predicted group:', 'Junior NFT Explorer', COLOR_PINK)
+        display_dial('Account profile:', 'Junior NFT Explorer', COLOR_PINK)
         st.write('''### High frequency, low volume NFT trader.  \n
                  Likes to explore new collections.''')
     elif profile == 1:
-        display_dial('Predicted group:', 'Infrequent account', COLOR_PINK)
+        display_dial('Account profile:', 'Infrequent account', COLOR_PINK)
         st.write('### Does not have many transactions.')
     elif profile == 2:
-        display_dial('Predicted group:', 'Junior Cryptocurrency Trader', COLOR_PINK)
+        display_dial('Account profile:', 'Junior Cryptocurrency Trader', COLOR_PINK)
         st.write('### Mid volume cryptocurrency trader.')
     elif profile == 3:
-        display_dial('Predicted group:', 'Common account', COLOR_PINK)
+        display_dial('Account profile:', 'Common account', COLOR_PINK)
         st.write('### Does not have that much activity on dApps.')
     elif profile == 5:
-        display_dial('Predicted group:', 'Senior NFT Explorer', COLOR_PINK)
+        display_dial('Account profile:', 'Senior NFT Explorer', COLOR_PINK)
         st.write('''### High frequency, mid volume NFT trader.  \n
                  Likes to explore new collections.''')
     elif profile == 6:
-        display_dial('Predicted group:', 'NFT Whale', COLOR_PINK)
+        display_dial('Account profile:', 'NFT Whale', COLOR_PINK)
         st.write('''### High volume, mid frequency NFT trader.  \n
                  Likes to trade expensive NFTs.''')
     elif profile == 7:
-        display_dial('Predicted group:', 'Senior Cryptocurrency Trader', COLOR_PINK)
+        display_dial('Account profile:', 'Senior Cryptocurrency Trader', COLOR_PINK)
         st.write('''### Mid volume cryptocurrency trader.  \n
                  Frequent user, does a lot of token transfers.''')
     else:
-        display_dial('Predicted group:', f'{profile}', COLOR_PINK)
-        st.write('### The behavior of this account type will be analyzed soon...')
+        display_dial('Account profile:', 'Category not analyzed', COLOR_PINK)
+        st.write('''### The behavior of this account type will be analyzed soon...
+                 Our model's prediction needs to be analyzed before we can give a descriptive label to this account.''')
 
     st.write('''Disclaimer: This prediction is made by an unsupervised clustering ML model.
                 It has trained on over 100k accounts, looking through hundreds of millions of transactions.
