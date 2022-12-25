@@ -129,4 +129,4 @@ def display_token_transfers(transfers_data, transfers_dict):
             time = str(timedelta(seconds=transfers_dict['avg_time_transfers']))
         else:
             time = '-'
-            display_dial("Average time between transfers",  time, COLOR_PINK)
+        display_dial("Average time between transfers",  time, COLOR_PINK)
