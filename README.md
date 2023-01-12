@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp" alt="ethap logo" width=80px />
+<img src="https://user-images.githubusercontent.com/114762620/211627044-d5f0516a-6086-4d69-906b-490e1a43ebf1.png" width="200" >
 </p>
 <h1 align="center">ETHAP User Interface</h1>
 <h3 align="center">:hatching_chick:Ethereum account profiling with Python:hatching_chick:</h3>
