@@ -1,4 +1,4 @@
-ETH_IMG = "https://ethereum.org/static/c48a5f760c34dfadcf05a208dab137cc/3a0ba/eth-diamond-rainbow.webp"
+ETH_IMG = "https://user-images.githubusercontent.com/114762620/212140523-d5be8fea-8e31-4889-b082-65b2d1dbaff7.png"
 ML_IMG = "https://www.pngkit.com/png/full/182-1820449_whitepages-pro-machine-learning-machine-learning-model-icon.png"
 OPENSEA_IMG ="https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/OpenSea_icon.svg/2048px-OpenSea_icon.svg.png"
 SWAP_IMG = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Uniswap_Logo.svg/1026px-Uniswap_Logo.svg.png"

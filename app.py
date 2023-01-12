@@ -18,8 +18,8 @@ model = load_model()
 
 # Create Title
 
-a, b = st.columns([1,8])
-a.image(ETH_IMG, width=80)
+a, b = st.columns([1,9])
+a.image(ETH_IMG, width=110)
 b.title("ETHAP\nETHEREUM ACCOUNT PROFILING")
 
 # Account input and data source selection
